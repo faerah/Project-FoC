@@ -1,0 +1,96 @@
+# -------------------------------
+# RAIL FENCE CIPHER IMPLEMENTATION
+# -------------------------------
+
+# Function to encrypt plaintext using Rail Fence Cipher
+def rail_fence_encrypt(text, rails):
+    """
+    Encrypts the given plaintext using Rail Fence Cipher.
+    
+    Parameters:
+    text (str): The plaintext to encrypt
+    rails (int): Number of rails to use for the cipher
+    
+    Returns:
+    str: Encrypted ciphertext
+    """
+    
+    text = text.replace(" ", "")  # Optional: remove spaces for encryption
+    fence = [[] for _ in range(rails)]  # Create empty rails
+    row, direction = 0, 1  # Start at top rail, moving down
+
+    # Place characters on rails in zigzag pattern
+    for ch in text:
+        fence[row].append(ch)
+        row += direction
+        
+        # Reverse direction when reaching top or bottom rail
+        if row == 0 or row == rails - 1:
+            direction *= -1
+
+    # Combine all rails to get ciphertext
+    return "".join("".join(r) for r in fence)
+
+
+# Function to decrypt ciphertext using Rail Fence Cipher
+def rail_fence_decrypt(ciphertext, rails):
+    """
+    Decrypts the given ciphertext using Rail Fence Cipher.
+    
+    Parameters:
+    ciphertext (str): The encrypted text
+    rails (int): Number of rails used during encryption
+    
+    Returns:
+    str: Decrypted plaintext
+    """
+    
+    ciphertext = ciphertext.replace(" ", "")
+    n = len(ciphertext)
+    rail = [['\n'] * n for _ in range(rails)]  # Initialize rail grid
+
+    row, direction = 0, 1
+    # Mark positions where letters will go
+    for i in range(n):
+        rail[row][i] = '*'
+        row += direction
+        if row == 0 or row == rails - 1:
+            direction *= -1
+
+    # Fill the rail grid with ciphertext letters
+    index = 0
+    for r in range(rails):
+        for c in range(n):
+            if rail[r][c] == '*' and index < n:
+                rail[r][c] = ciphertext[index]
+                index += 1
+
+    # Read letters in zigzag order to reconstruct plaintext
+    result = ''
+    row, direction = 0, 1
+    for i in range(n):
+        result += rail[row][i]
+        row += direction
+        if row == 0 or row == rails - 1:
+            direction *= -1
+
+    return result
+
+
+# -------------------------------
+# MAIN PROGRAM / USER INTERACTION
+# -------------------------------
+print("----- WELCOME TO RAIL FENCE CIPHER -----\n")
+
+# Get input from user
+message = input("Enter your plaintext: ")  # Plain text
+rails = int(input("Enter number of rails: "))  # Key: number of rails
+
+# Perform encryption and decryption
+encrypted = rail_fence_encrypt(message, rails)
+decrypted = rail_fence_decrypt(encrypted, rails)
+
+# Display results
+print("\nPlain Text:", message)
+print("Encrypted:", encrypted)
+print("Decrypted:", decrypted)

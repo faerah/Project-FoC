@@ -1,0 +1,54 @@
+# -------------------------------
+# CAESAR CIPHER IMPLEMENTATION
+# -------------------------------
+
+# Function to encrypt plaintext using Caesar Cipher
+def caesar_encrypt(plaintext, shift):
+    """
+    Encrypts the given plaintext using Caesar Cipher.
+    
+    Parameters:
+    plaintext (str): The text to be encrypted
+    shift (int): Number of letters to shift (key)
+    
+    Returns:
+    str: Encrypted ciphertext
+    """
+    
+    result = ""  # Store ciphertext here
+    for ch in plaintext:
+        if ch.isalpha():  # Only shift letters, keep symbols/numbers unchanged
+            # Determine base: 'A' for uppercase, 'a' for lowercase
+            base = ord('A') if ch.isupper() else ord('a')
+            # Encrypt the letter and add it to result
+            result += chr((ord(ch) - base + shift) % 26 + base)
+            
+        else:
+            result += ch  # Non-letter characters remain the same
+    return result
+
+# Function to decrypt ciphertext using Caesar Cipher
+def caesar_decrypt(ciphertext, shift):
+    """
+    Decrypts the given ciphertext using Caesar Cipher.
+    Decryption is the reverse of encryption, so use -shift
+    """
+    return caesar_encrypt(ciphertext, -shift)  # Use the encrypt function with negative shift
+
+# -------------------------------
+# MAIN PROGRAM / USER INTERACTION
+# -------------------------------
+print("----- WELCOME TO CAESAR CIPHER -----\n")
+
+# Get input from user
+message = input("Enter your plaintext: ")  # Plain text from user
+shift_value = int(input("Enter shift value: "))  # Key shift
+
+# Perform encryption and decryption
+encrypted = caesar_encrypt(message, shift_value)
+decrypted = caesar_decrypt(encrypted, shift_value)
+
+# Display results
+print("\nPlain Text:", message)
+print("Encrypted:", encrypted)
+print("Decrypted:", decrypted)
